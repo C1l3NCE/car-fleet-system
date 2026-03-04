@@ -51,15 +51,6 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/fix-pass', function () {
-
-    $user = User::where('email','admin@mail.com')->first();
-
-    $user->password = Hash::make('password');
-    $user->save();
-
-    return 'password updated';
-});
 
 
 /*
