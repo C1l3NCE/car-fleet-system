@@ -216,13 +216,15 @@ Route::middleware(['auth', 'role:driver'])->group(function () {
         '/trips/{trip}',
         [TripController::class, 'destroy']
     )->name('trips.destroy');
-    Route::get('/debug-pass', function () {
+    Route::get('/test-login', function () {
+
     $user = \App\Models\User::where('email','admin@mail.com')->first();
 
-    if (!$user) {
-        return 'USER NOT FOUND';
+    if (\Hash::check('password', $user->password)) {
+        \Auth::login($user);
+        return "LOGIN OK";
     }
 
-    return \Hash::check('password', $user->password) ? 'TRUE' : 'FALSE';
+    return "PASSWORD FAIL";
 });
 });
