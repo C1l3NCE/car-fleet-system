@@ -18,17 +18,17 @@ WORKDIR /var/www
 COPY . .
 
 # Устанавливаем зависимости
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Создаем папки Laravel
+# Права Laravel
 RUN mkdir -p storage/logs \
-    && mkdir -p bootstrap/cache \
     && touch storage/logs/laravel.log \
-    && chmod -R 777 storage bootstrap/cache
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
 
 # nginx конфиг
 COPY nginx.conf /etc/nginx/sites-available/default
 
 EXPOSE 10000
 
-CMD php artisan migrate:fresh --force || true && service nginx start && php-fpm
+CMD service nginx start && php-fpm
