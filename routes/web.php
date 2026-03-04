@@ -47,6 +47,9 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 */
 
 Route::get('/login', [LoginController::class, 'show'])->name('login');
+Route::get('/debug-user', function () {
+    return \App\Models\User::count();
+});
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
