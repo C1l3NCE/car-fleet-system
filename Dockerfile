@@ -34,4 +34,4 @@ RUN php artisan session:table || true
 
 EXPOSE 10000
 
-CMD php artisan migrate --force || true && service nginx start && php-fpm
+CMD php artisan migrate --force && service nginx start && php-fpm
