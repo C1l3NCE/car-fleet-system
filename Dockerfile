@@ -1,6 +1,6 @@
 FROM php:8.2-fpm
 
-# Установка пакетов
+# Установка зависимостей
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -9,29 +9,30 @@ RUN apt-get update && apt-get install -y \
     nginx \
     && docker-php-ext-install pdo pdo_pgsql pgsql zip
 
-# Установка Composer
+# Установка composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Рабочая папка
 WORKDIR /var/www
 
 # Копируем проект
 COPY . .
 
-# Устанавливаем зависимости Laravel
+# Устанавливаем зависимости
 RUN composer install --no-dev --optimize-autoloader
 
-# Создаём таблицу sessions (если её нет)
-RUN php artisan session:table || true
+# Создаем нужные папки Laravel
+RUN mkdir -p storage/logs \
+    && mkdir -p bootstrap/cache
 
-# Настройка nginx
+# Права для Laravel
+RUN chown -R www-data:www-data /var/www \
+    && chmod -R 775 storage bootstrap/cache
+
+# nginx конфиг
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Права Laravel
-RUN chmod -R 777 storage bootstrap/cache
-
-# Открываем порт Render
+# Порт render
 EXPOSE 10000
 
-# Запуск контейнера
+# Запуск
 CMD php artisan migrate --force || true && service nginx start && php-fpm
