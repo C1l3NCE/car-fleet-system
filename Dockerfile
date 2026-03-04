@@ -20,6 +20,7 @@ COPY . .
 
 # Устанавливаем зависимости
 RUN composer install --no-dev --optimize-autoloader
+RUN php artisan migrate --force
 
 # Создаем sqlite
 RUN touch database/database.sqlite
