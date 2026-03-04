@@ -47,10 +47,6 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 */
 
 Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::get('/debug-pass', function () {
-    $user = \App\Models\User::where('email','admin@mail.com')->first();
-    return \Hash::check('password', $user->password);
-});
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
@@ -220,4 +216,13 @@ Route::middleware(['auth', 'role:driver'])->group(function () {
         '/trips/{trip}',
         [TripController::class, 'destroy']
     )->name('trips.destroy');
+    Route::get('/debug-pass', function () {
+    $user = \App\Models\User::where('email','admin@mail.com')->first();
+
+    if (!$user) {
+        return 'USER NOT FOUND';
+    }
+
+    return \Hash::check('password', $user->password) ? 'TRUE' : 'FALSE';
+});
 });
