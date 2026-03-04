@@ -11,6 +11,8 @@ use App\Http\Controllers\RepairController;
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ReportController;
 use App\Models\ActivityLog;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -49,16 +51,14 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-Route::get('/test-login', function () {
+Route::get('/fix-pass', function () {
 
-    $user = \App\Models\User::where('email','admin@mail.com')->first();
+    $user = User::where('email','admin@mail.com')->first();
 
-    if (\Hash::check('password', $user->password)) {
-        \Auth::login($user);
-        return "LOGIN OK";
-    }
+    $user->password = Hash::make('password');
+    $user->save();
 
-    return "PASSWORD FAIL";
+    return 'password updated';
 });
 
 
