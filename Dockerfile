@@ -1,31 +1,35 @@
-FROM php:8.2-cli
+FROM php:8.2-fpm
 
-WORKDIR /var/www
-
-# Устанавливаем зависимости
+# Установка пакетов
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
     sqlite3 \
     libsqlite3-dev \
-    && docker-php-ext-install pdo pdo_sqlite
+    nginx \
+    && docker-php-ext-install pdo pdo_sqlite zip
 
-# Устанавливаем composer
+# Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
 
 # Копируем проект
 COPY . .
 
-# Устанавливаем зависимости Laravel
+# Устанавливаем зависимости
 RUN composer install --no-dev --optimize-autoloader
 
-# Создаем базу SQLite
+# Создаем sqlite
 RUN touch database/database.sqlite
 
-# Генерируем ключ
-RUN php artisan key:generate
+# Настройка nginx
+COPY nginx.conf /etc/nginx/sites-available/default
+
+# Права
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 10000
 
-CMD php artisan serve --host=0.0.0.0 --port=10000
+CMD service nginx start && php-fpm
