@@ -47,8 +47,9 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 */
 
 Route::get('/login', [LoginController::class, 'show'])->name('login');
-Route::get('/debug-user', function () {
-    return \App\Models\User::count();
+Route::get('/debug-pass', function () {
+    $user = \App\Models\User::where('email','admin@mail.com')->first();
+    return \Hash::check('password', $user->password);
 });
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
