@@ -22,4 +22,4 @@ RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 EXPOSE 10000
 
-CMD service nginx start && php-fpm
+CMD php artisan migrate --force || true && service nginx start && php-fpm
