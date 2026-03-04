@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     nginx \
     && docker-php-ext-install pdo pdo_pgsql pgsql zip
 
-# Composer
+# Установка Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
@@ -20,18 +20,15 @@ COPY . .
 # Устанавливаем зависимости
 RUN composer install --no-dev --optimize-autoloader
 
-# Настройка папок Laravel
+# Создаем папки Laravel
 RUN mkdir -p storage/logs \
+    && mkdir -p bootstrap/cache \
     && touch storage/logs/laravel.log \
-    && chmod -R 777 storage \
-    && chmod -R 777 bootstrap/cache
+    && chmod -R 777 storage bootstrap/cache
 
 # nginx конфиг
 COPY nginx.conf /etc/nginx/sites-available/default
 
-# Создаём таблицу sessions если её нет
-RUN php artisan session:table || true
-
 EXPOSE 10000
 
-CMD php artisan migrate:fresh --force && service nginx start && php-fpm
+CMD php artisan migrate:fresh --force || true && service nginx start && php-fpm
