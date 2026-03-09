@@ -81,7 +81,11 @@ class DashboardController extends Controller
             ])->latest()->limit(5)->get();
 
             // --- 🤖 AI-РЕКОМЕНДАЦИЯ ---
-            $aiRecommendation = AIService::operatorRecommendation($vehicles);
+            try {
+                $aiRecommendation = AIService::operatorRecommendation($vehicles);
+            } catch (\Throwable $e) {
+                $aiRecommendation = "⚠ AI анализ временно недоступен.";
+            }
 
             // --- ПЕРЕДАЧА В ШАБЛОН ---
             return view('dashboard.operator', [
