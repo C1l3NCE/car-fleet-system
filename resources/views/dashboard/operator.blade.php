@@ -183,7 +183,7 @@
                                 </span>
                             </div>
                             <small class="text-muted">
-                                {{ $log->created_at->diffForHumans() }}
+                                {{ $log->created_at?->diffForHumans() }}
                             </small>
                         </div>
                     @endforeach
