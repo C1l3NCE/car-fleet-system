@@ -28,4 +28,8 @@ COPY nginx.conf /etc/nginx/sites-available/default
 
 EXPOSE 10000
 
+RUN php artisan config:clear
+RUN php artisan route:clear
+RUN php artisan view:clear
+
 CMD service nginx start && php-fpm
