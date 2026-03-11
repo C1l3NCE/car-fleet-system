@@ -62,10 +62,10 @@ class DashboardController extends Controller
 
             // --- СТАТИСТИКА ТО ПО МЕСЯЦАМ ---
             $rawStats = Maintenance::selectRaw(
-                'MONTH(service_date) as month, COUNT(*) as total'
+                'EXTRACT(MONTH FROM service_date) as month, COUNT(*) as total'
             )
                 ->whereYear('service_date', now()->year)
-                ->groupBy('month')
+                ->groupByRaw('EXTRACT(MONTH FROM service_date)')
                 ->pluck('total', 'month')
                 ->toArray();
 
@@ -139,9 +139,5 @@ class DashboardController extends Controller
                 'ai'  // ← ВАЖНО!
             ));
         }
-
-
-
-
     }
 }
