@@ -16,7 +16,11 @@ COPY . .
 
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-RUN mkdir -p storage bootstrap/cache \
+# Laravel storage link
+RUN php artisan storage:link || true
+
+RUN mkdir -p storage/logs \
+    && touch storage/logs/laravel.log \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
