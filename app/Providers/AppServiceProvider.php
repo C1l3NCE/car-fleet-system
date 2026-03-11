@@ -14,9 +14,9 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        if (env('APP_ENV') === 'production') {
-            URL::forceRootUrl(env('APP_URL'));
-            URL::forceScheme('https');
-        }
+        if (app()->environment('production')) {
+        URL::forceRootUrl('https://car-fleet-system.onrender.com');
+        URL::forceScheme('https');
+    }
     }
 }
